@@ -110,6 +110,9 @@ public class SolicitudSvc {
         if (!authSvc.existsUserSvc(usuarioSolicita)) {
             throw new BeneficioException("Usuario no se encuentra registrado en Beneficio");
         }
+        if(solicitudRepository.obtenerSolicitudes(usuarioSolicita).isEmpty()){
+            throw new BeneficioException("Usuario no cuenta con solicitudes en Beneficio");
+        }
         return solicitudRepository.obtenerSolicitudes(usuarioSolicita);
     }
 

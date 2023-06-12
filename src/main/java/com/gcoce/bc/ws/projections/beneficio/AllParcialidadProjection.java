@@ -7,6 +7,8 @@ import java.util.UUID;
  * @since 11/06/2023
  */
 public interface AllParcialidadProjection {
+
+    String getNoCuenta();
     UUID getParcialidadId();
 
     String getLicenciaPiloto();

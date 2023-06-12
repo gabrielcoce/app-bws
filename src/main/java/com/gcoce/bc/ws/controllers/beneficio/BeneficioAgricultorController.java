@@ -56,14 +56,26 @@ public class BeneficioAgricultorController {
         return parcialidadSvc.createParcialidadSvc(parcialidadDto, token);
     }
 
-    @Operation(summary = "Obtener parcialidades ", description = "Método para obtener parcialidades por Cuenta")
-    @GetMapping("/parcialidad/obtener-parcialidades/{noCuenta}")
-    public List<AllParcialidadProjection> getAllParcialidades(@PathVariable String noCuenta) {
-        return parcialidadSvc.allParcialidadesSvc(noCuenta);
+    @Operation(summary = "Obtener parcialidades por usuario", description = "Método para obtener parcialidades por Usuario")
+    @GetMapping("/parcialidad/obtener-parcialidades/{user}")
+    public List<AllParcialidadProjection> getAllParcialidades(@PathVariable String user) {
+        return parcialidadSvc.allParcialidadesUserSvc(user);
     }
     @Operation(summary = "Obtener cuentas de un usuario", description = "Método para obtener cuenta")
     @GetMapping("/cuenta/obtener-cuentas/{user}")
     public List<AllCuentaProjection> getCuentaBeneficio(@PathVariable String user){
         return cuentaSvc.obtenerCuentasByUserSvc(user);
+    }
+
+    @Operation(summary = "Verifica que exista cuentas para usuarios", description = "Método para obtener cuenta")
+    @GetMapping("/cuenta/verifica-existe-cuentas/{user}")
+    public Boolean getExisteCuenta(@PathVariable String user){
+        return cuentaSvc.existeCuentaByUser(user);
+    }
+
+    @Operation(summary = "Verifica que exista parcialidades para el usuario", description = "Método para obtener parcialidades")
+    @GetMapping("/parcialidad/verifica-existe-parcialidades/{user}")
+    public Boolean getExisteParcialidad(@PathVariable String user){
+        return parcialidadSvc.existeParcialidadUserSvc(user);
     }
 }

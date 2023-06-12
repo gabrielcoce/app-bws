@@ -45,10 +45,17 @@ public interface ParcialidadRepository extends JpaRepository<Parcialidad, UUID> 
     List<ParcialidadProjection> obtenerParcialidades(@Param("noCuenta") String noCuenta);
     Optional<Parcialidad> findParcialidadByParcialidadId(UUID parcialidadId);
 
-    @Query(value = "select p.parcialidad_id parcialidadId, p.licencia_piloto licenciaPiloto, p.placa_transporte placaTransporte, \n" +
+    @Query(value = "select c.no_cuenta noCuenta, p.parcialidad_id parcialidadId, p.licencia_piloto licenciaPiloto, p.placa_transporte placaTransporte, \n" +
             "p.peso_ingresado pesoIngresado\n" +
             "from beneficio_ws.parcialidad p \n" +
             "inner join beneficio_ws.cuenta c on c.no_cuenta =  p.no_cuenta \n" +
             "where p.no_cuenta =:noCuenta", nativeQuery = true)
     List<AllParcialidadProjection> allParcialidadesByCuenta(@Param("noCuenta") String noCuenta);
+
+    @Query(value = "select c.no_cuenta noCuenta, p.parcialidad_id parcialidadId, p.licencia_piloto licenciaPiloto, p.placa_transporte placaTransporte, p.peso_ingresado  pesoIngresado\n" +
+            "from beneficio_ws.cuenta c \n" +
+            "inner join beneficio_ws.solicitud s on s.no_solicitud = c.no_solicitud \n" +
+            "inner join beneficio_ws.parcialidad p on p.no_cuenta = c.no_cuenta \n" +
+            "where s.usuario_solicita =:usuario", nativeQuery = true)
+    List<AllParcialidadProjection> allParcialidadesByUser(@Param("usuario") String usuario);
 }

@@ -57,7 +57,7 @@ public class CuentaSvc {
             message = String.format("La cuenta no puede ser creada porque la solicitud %s no a sido aprobada.", solicitud.getNoSolicitud());
             throw new BeneficioException(message);
         }
-        if (!Objects.equals(solicitud.getEstadoSolicitud(), Constants.TIPO_SOLICITUD_CC)) {
+        if (!Objects.equals(solicitud.getTipoSolicitud(), Constants.TIPO_SOLICITUD_CC)) {
             message = String.format("La cuenta no puede ser creada porque la solicitud %s no corresponde a creación de cuenta.", solicitud.getNoSolicitud());
             throw new BeneficioException(message);
         }
@@ -82,6 +82,12 @@ public class CuentaSvc {
         return cuentaRepository.allCuentasByUser(user);
     }
 
+    public Boolean existeCuentaByUser(String user){
+        if (!authSvc.existsUserSvc(user)) {
+            throw new BeneficioException("Usuario no se encuentra registrado en Beneficio");
+        }
+        return !cuentaRepository.allCuentasByUser(user).isEmpty();
+    }
     public AllCuentaProjection obtenerCuentaByBcSvc(String noCuenta) {
         if (existsCuenta(noCuenta)) {
             throw new BeneficioException("No. Cuenta no existe en Beneficio");

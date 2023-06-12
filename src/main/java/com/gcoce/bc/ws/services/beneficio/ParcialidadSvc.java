@@ -125,6 +125,22 @@ public class ParcialidadSvc {
         }
         return parcialidadRepository.allParcialidadesByCuenta(noCuenta);
     }
+    public List<AllParcialidadProjection> allParcialidadesUserSvc(String user){
+        if (!authSvc.existsUserSvc(user)) {
+            throw new BeneficioException("Usuario no se encuentra registrado en Beneficio");
+        }
+        if(parcialidadRepository.allParcialidadesByUser(user).isEmpty()){
+            throw new BeneficioException("Usuario no cuenta con parcialidades registradas");
+        }
+        return parcialidadRepository.allParcialidadesByUser(user);
+    }
+
+    public Boolean existeParcialidadUserSvc(String user) {
+        if (!authSvc.existsUserSvc(user)) {
+            throw new BeneficioException("Usuario no se encuentra registrado en Beneficio");
+        }
+        return !parcialidadRepository.allParcialidadesByUser(user).isEmpty();
+    }
 
     public Parcialidad obtenerParcialidadSvc(UUID parcialidadId) {
         return parcialidadRepository.findParcialidadByParcialidadId(parcialidadId).orElseThrow(() -> new BeneficioException("No existe parcialidad"));
@@ -133,6 +149,10 @@ public class ParcialidadSvc {
     public boolean verificarParcialidadSvc(UUID parcialidadId, String user) {
         Parcialidad parcialidad = parcialidadRepository.findById(parcialidadId).orElse(null);
         if (parcialidad == null) {
+            logger.error("No se puedo verificar parcialidad");
+            return false;
+        }
+        if (!authSvc.existsUserSvc(user)) {
             logger.error("No se puedo verificar parcialidad");
             return false;
         }
