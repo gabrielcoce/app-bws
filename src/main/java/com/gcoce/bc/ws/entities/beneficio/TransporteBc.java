@@ -57,7 +57,7 @@ public class TransporteBc {
         transporteBc.setPlacaTransporte(transporteBcDto.getPlacaTransporte());
         transporteBc.setMarca(transporteBcDto.getMarca());
         transporteBc.setColor(transporteBcDto.getColor());
-        transporteBc.setStatus(false);
+        transporteBc.setStatus(true);
         transporteBc.setUserCreated(user);
         transporteBc.setCreatedAt(Fechas.setTimeZoneDateGT(new Date()));
         return transporteBc;

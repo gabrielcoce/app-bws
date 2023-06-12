@@ -18,10 +18,6 @@ public class ActualizarCuentaDto {
     @NotNull
     private String noCuenta;
 
-    /*@NotBlank
-    @NotNull
-    private String userUpdated;*/
-
     @NotNull
     private Integer nuevoEstado;
 }

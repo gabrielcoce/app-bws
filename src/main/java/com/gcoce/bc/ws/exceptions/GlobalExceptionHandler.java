@@ -2,7 +2,6 @@ package com.gcoce.bc.ws.exceptions;
 
 import com.gcoce.bc.ws.payload.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.Objects;
 
 @ControllerAdvice
-@Slf4j
 public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public final ResponseEntity<Object> handleAuthenticationException(Exception ex, HttpServletRequest request) {
@@ -73,6 +71,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BeneficioException.class)
     public final ResponseEntity<Object> handleBeneficioException(BeneficioException ex, HttpServletRequest request){
+        ErrorResponse error = new ErrorResponse(HttpStatus.NOT_ACCEPTABLE, ex.getMessage(), request.getServletPath());
+        return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
+    }
+    @ExceptionHandler(AgricultorException.class)
+    public final ResponseEntity<Object> handleAgricultorException(AgricultorException ex, HttpServletRequest request){
+        ErrorResponse error = new ErrorResponse(HttpStatus.NOT_ACCEPTABLE, ex.getMessage(), request.getServletPath());
+        return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
+    }
+    @ExceptionHandler(PesoCabalException.class)
+    public final ResponseEntity<Object> handlePesoCabalException(PesoCabalException ex, HttpServletRequest request){
         ErrorResponse error = new ErrorResponse(HttpStatus.NOT_ACCEPTABLE, ex.getMessage(), request.getServletPath());
         return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
     }

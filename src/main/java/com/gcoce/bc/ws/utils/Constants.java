@@ -14,7 +14,7 @@ public class Constants {
 
     public static final Integer SOLICITUD_CREADA = 1;
 
-    public static final Integer SOLICITUD_EN_PROCESO = 2;
+    public static final Integer SOLICITUD_RECHAZADA = 2;
 
     public static final Integer SOLICITUD_APROBADA = 3;
 

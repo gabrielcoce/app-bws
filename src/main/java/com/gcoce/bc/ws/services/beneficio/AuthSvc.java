@@ -82,10 +82,10 @@ public class AuthSvc {
         if (!hcaptchaSuccess) {
             List<String> errorCodes = (List) responseBody.get("error-codes");
             if (errorCodes != null) {
-                errorMessage= errorCodes.stream().map(HcaptchaError.HCAPTCHA_ERROR_CODE::get)
+                errorMessage = errorCodes.stream().map(HcaptchaError.HCAPTCHA_ERROR_CODE::get)
                         .collect(Collectors.joining(", "));
             } else {
-                errorMessage = "Token ya fue utilizado, por favor intente de nuevo.";
+                errorMessage = "Token ya fue utilizado, por favor intente de nuevo";
             }
             throw new HcException(errorMessage);
         }
@@ -133,7 +133,7 @@ public class AuthSvc {
             logger.info("strRoles " + strRoles);
             if (strRoles.isEmpty()) {
                 logger.error("role esta vacio ");
-                throw new AuthBadRequestException("El role esta vacio");
+                throw new AuthBadRequestException("El rol esta vacio");
 
             } else {
                 logger.info("validando role ");
@@ -145,27 +145,27 @@ public class AuthSvc {
                     switch (role) {
                         case "admin" -> {
                             Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                    .orElseThrow(() -> new AuthBadRequestException("Role is not found."));
+                                    .orElseThrow(() -> new AuthBadRequestException("Rol no valido"));
                             roles.add(adminRole);
                         }
                         case "beneficio" -> {
                             Role beneficioRole = roleRepository.findByName(ERole.ROLE_BENEFICIO)
-                                    .orElseThrow(() -> new AuthBadRequestException("Role is not found."));
+                                    .orElseThrow(() -> new AuthBadRequestException("Rol no valido"));
                             roles.add(beneficioRole);
                         }
                         case "agricultor" -> {
                             Role agricultorRole = roleRepository.findByName(ERole.ROLE_AGRICULTOR)
-                                    .orElseThrow(() -> new AuthBadRequestException("Role is not found."));
+                                    .orElseThrow(() -> new AuthBadRequestException("Rol no valido"));
                             roles.add(agricultorRole);
                         }
                         case "peso" -> {
                             Role pesoCabalRole = roleRepository.findByName(ERole.ROLE_PESO_CABAL)
-                                    .orElseThrow(() -> new AuthBadRequestException("Role is not found."));
+                                    .orElseThrow(() -> new AuthBadRequestException("Rol no valido"));
                             roles.add(pesoCabalRole);
                         }
                         case "user" -> {
                             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                    .orElseThrow(() -> new AuthBadRequestException("Role is not found."));
+                                    .orElseThrow(() -> new AuthBadRequestException("Rol no valido"));
                             roles.add(userRole);
                         }
                         default -> {
@@ -180,7 +180,7 @@ public class AuthSvc {
                 throw new AuthBadRequestException("Rol no valido");
             }
             userRepository.save(user);
-            message = String.format("Usuario %s a sido registrado exitosamente ", user.getUsername());
+            message = String.format("Usuario %s a sido registrado exitosamente", user.getUsername());
             return ResponseEntity.ok(new SuccessResponse<>(HttpStatus.OK, message));
         } catch (AuthBadRequestException e) {
             throw new AuthBadRequestException(e.getMessage());

@@ -1,13 +1,15 @@
 package com.gcoce.bc.ws.controllers.beneficio;
 
-import com.gcoce.bc.ws.dto.beneficio.CuentaDto;
 import com.gcoce.bc.ws.dto.beneficio.ParcialidadDto;
 import com.gcoce.bc.ws.dto.beneficio.SolicitudDto;
+import com.gcoce.bc.ws.projections.beneficio.AllCuentaProjection;
+import com.gcoce.bc.ws.projections.beneficio.AllParcialidadProjection;
 import com.gcoce.bc.ws.projections.beneficio.SolicitudesProjection;
 import com.gcoce.bc.ws.services.beneficio.CuentaSvc;
 import com.gcoce.bc.ws.services.beneficio.ParcialidadSvc;
 import com.gcoce.bc.ws.services.beneficio.SolicitudSvc;
 import com.gcoce.bc.ws.utils.Constants;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +31,10 @@ public class BeneficioAgricultorController {
     private SolicitudSvc solicitudSvc;
 
     @Autowired
-    private CuentaSvc cuentaSvc;
+    private ParcialidadSvc parcialidadSvc;
 
     @Autowired
-    private ParcialidadSvc parcialidadSvc;
+    private CuentaSvc cuentaSvc;
 
     @PostMapping("/solicitud/crear-solicitud")
     public ResponseEntity<?> createSolicitud(@Valid @RequestBody SolicitudDto solicitudDto, @RequestHeader(value = Constants.AUTHORIZATION, required = false) String token) {
@@ -40,24 +42,28 @@ public class BeneficioAgricultorController {
     }
 
     @GetMapping("/solicitud/verifica-existe-solicitudes/{usuario}")
-    @ResponseBody
     public Boolean verificaSolicitudes(@PathVariable String usuario) {
         return solicitudSvc.verificaSolicitudesSvc(usuario);
     }
 
     @GetMapping("/solicitud/obtener-solicitudes/{usuario}")
-    @ResponseBody
     public List<SolicitudesProjection> obtenerSolicitudes(@PathVariable String usuario) {
         return solicitudSvc.obtenerSolicitudesSvc(usuario);
-    }
-
-    @PostMapping("/cuenta/crear-cuenta")
-    public ResponseEntity<?> crearCuenta(@Valid @RequestBody CuentaDto cuentaDto, @RequestHeader(value = Constants.AUTHORIZATION, required = false) String token) {
-        return cuentaSvc.crearCuentaSvc(cuentaDto, token);
     }
 
     @PostMapping("/parcialidad/crear-parcialidad")
     public ResponseEntity<?> createParcialidad(@Valid @RequestBody ParcialidadDto parcialidadDto, @RequestHeader(value = Constants.AUTHORIZATION, required = false) String token) {
         return parcialidadSvc.createParcialidadSvc(parcialidadDto, token);
+    }
+
+    @Operation(summary = "Obtener parcialidades ", description = "Método para obtener parcialidades por Cuenta")
+    @GetMapping("/parcialidad/obtener-parcialidades/{noCuenta}")
+    public List<AllParcialidadProjection> getAllParcialidades(@PathVariable String noCuenta) {
+        return parcialidadSvc.allParcialidadesSvc(noCuenta);
+    }
+    @Operation(summary = "Obtener cuentas de un usuario", description = "Método para obtener cuenta")
+    @GetMapping("/cuenta/obtener-cuentas/{user}")
+    public List<AllCuentaProjection> getCuentaBeneficio(@PathVariable String user){
+        return cuentaSvc.obtenerCuentasByUserSvc(user);
     }
 }

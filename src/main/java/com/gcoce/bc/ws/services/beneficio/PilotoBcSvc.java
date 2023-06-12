@@ -1,5 +1,6 @@
 package com.gcoce.bc.ws.services.beneficio;
 
+import com.gcoce.bc.ws.dto.beneficio.ActualizarPilotoDto;
 import com.gcoce.bc.ws.dto.beneficio.PilotoBcDto;
 import com.gcoce.bc.ws.entities.beneficio.PilotoBc;
 import com.gcoce.bc.ws.exceptions.BeneficioException;
@@ -34,12 +35,31 @@ public class PilotoBcSvc {
         return ResponseEntity.ok(new SuccessResponse<>(HttpStatus.OK, "Piloto creado exitosamente.", true));
     }
 
+    public ResponseEntity<?> updateEstadoPilotoSvc(ActualizarPilotoDto actualizarPilotoDto, String token) {
+        String message;
+        var pilotoBc = pilotoBcRepository.findById(actualizarPilotoDto.getLicenciaPiloto()).orElse(null);
+        if (pilotoBc == null) {
+            message = String.format("No se encontró ningún piloto %s para actualizar", actualizarPilotoDto.getLicenciaPiloto());
+            throw new BeneficioException(message);
+        }
+
+        if (!updateStatusPiloto(actualizarPilotoDto.getLicenciaPiloto(), actualizarPilotoDto.getStatus(), authSvc.userFromToken(token))) {
+            throw new BeneficioException("No se pudo actualizar el estado del piloto.");
+        }
+        return ResponseEntity.ok(new SuccessResponse<>(HttpStatus.OK, "Piloto actualizado exitosamente.", true));
+    }
+
     public boolean existsPiloto(String licenciaPiloto) {
         return pilotoBcRepository.existsPilotoBcByLicenciaPiloto(licenciaPiloto);
     }
 
-    public boolean statusPiloto(String licenciaPiloto){
+    public boolean statusPiloto(String licenciaPiloto) {
         PilotoBc pilotoBc = pilotoBcRepository.findPilotoBcByLicenciaPiloto(licenciaPiloto).orElseThrow(() -> new RecordNotFoundException("Piloto no encontrado."));
         return pilotoBc.getStatus();
+    }
+
+    private boolean updateStatusPiloto(String licenciaPiloto, Boolean status, String user) {
+        Integer estado = pilotoBcRepository.putEstadoTransporte(licenciaPiloto, status, user);
+        return estado != 0;
     }
 }

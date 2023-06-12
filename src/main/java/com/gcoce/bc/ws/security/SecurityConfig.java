@@ -71,7 +71,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .requestMatchers("/api/beneficio-agricultor/**").hasAuthority("ROLE_AGRICULTOR")
-                        .requestMatchers("/api/beneficio-peso-cabal/**").hasAuthority("ROLE_PESO_CABAL")
+                        .requestMatchers("/api/peso-cabal/**").hasAuthority("ROLE_PESO_CABAL")
                         .anyRequest().authenticated())
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

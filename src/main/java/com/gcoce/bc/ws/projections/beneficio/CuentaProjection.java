@@ -5,11 +5,9 @@ package com.gcoce.bc.ws.projections.beneficio;
  * @since 29/05/2023
  */
 public interface CuentaProjection {
-    //public String getNoCuenta();
+    Integer getEstadoCuenta();
 
-    public Integer getEstadoCuenta();
+    Integer getPesoTotal();
 
-    public Integer getPesoTotal();
-
-    public Integer getCantidadParcialidades();
+    Integer getCantidadParcialidades();
 }

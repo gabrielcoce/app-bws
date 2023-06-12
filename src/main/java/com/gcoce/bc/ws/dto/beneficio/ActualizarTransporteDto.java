@@ -8,16 +8,16 @@ import lombok.ToString;
 
 /**
  * @author Gabriel Coc Estrada
- * @since 06/06/2023
+ * @since 11/06/2023
  */
 @Getter
 @Setter
 @ToString
-public class ActualizarSolicitudDto {
+public class ActualizarTransporteDto {
     @NotBlank
     @NotNull
-    private String noSolicitud;
+    private String placaTransporte;
 
-    /*@NotNull
-    private Integer nuevoEstado;*/
+    @NotNull
+    private Boolean status;
 }

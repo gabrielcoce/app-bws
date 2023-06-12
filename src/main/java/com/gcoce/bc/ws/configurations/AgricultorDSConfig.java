@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Configuration
 @EnableTransactionManagement
@@ -31,7 +32,7 @@ public class AgricultorDSConfig {
         dataSource.setUrl(env.getProperty("agricultor.datasource.url"));
         dataSource.setUsername(env.getProperty("agricultor.datasource.username"));
         dataSource.setPassword(env.getProperty("agricultor.datasource.password"));
-        dataSource.setDriverClassName(env.getProperty("agricultor.datasource.driver-class-name"));
+        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("agricultor.datasource.driver-class-name")));
         return dataSource;
     }
 

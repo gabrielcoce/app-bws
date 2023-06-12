@@ -1,5 +1,6 @@
 package com.gcoce.bc.ws.services.beneficio;
 
+import com.gcoce.bc.ws.dto.beneficio.ActualizarTransporteDto;
 import com.gcoce.bc.ws.dto.beneficio.TransporteBcDto;
 import com.gcoce.bc.ws.entities.beneficio.TransporteBc;
 import com.gcoce.bc.ws.exceptions.BeneficioException;
@@ -34,12 +35,31 @@ public class TransporteBcSvc {
         return ResponseEntity.ok(new SuccessResponse<>(HttpStatus.OK, "Transporte creado exitosamente.", true));
     }
 
+    public ResponseEntity<?> updateEstadoTransporteSvc(ActualizarTransporteDto dto, String token){
+        String message;
+        TransporteBc transporteBc = transporteBcRepository.findById(dto.getPlacaTransporte()).orElse(null);
+        if(transporteBc == null){
+            message = String.format("No se encontró ningún transporte %s para actualizar", dto.getPlacaTransporte());
+            throw new BeneficioException(message);
+        }
+
+        if(!updateStatusTransporte(dto.getPlacaTransporte(), dto.getStatus(), authSvc.userFromToken(token))){
+            throw new BeneficioException("No se pudo actualizar el estado del transporte.");
+        }
+
+        return ResponseEntity.ok(new SuccessResponse<>(HttpStatus.OK, "Transporte actualizado exitosamente.", true));
+    }
     public boolean existsTransporte(String placaTransporte) {
         return transporteBcRepository.existsTransporteBcByPlacaTransporte(placaTransporte);
     }
 
-    public boolean statusTransporte(String placaTransporte){
+    public boolean statusTransporte(String placaTransporte) {
         TransporteBc transporteBc = transporteBcRepository.findTransporteBcByPlacaTransporte(placaTransporte).orElseThrow(() -> new RecordNotFoundException("Transporte no encontrado."));
         return transporteBc.getStatus();
+    }
+
+    private boolean updateStatusTransporte(String placaTransporte, Boolean status, String user) {
+        Integer estado = transporteBcRepository.putEstadoTransporte(placaTransporte, status, user);
+        return estado != 0;
     }
 }

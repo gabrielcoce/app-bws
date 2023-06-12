@@ -1,12 +1,16 @@
 package com.gcoce.bc.ws.repositories.beneficio;
 
 import com.gcoce.bc.ws.entities.beneficio.Parcialidad;
+import com.gcoce.bc.ws.projections.beneficio.AllParcialidadProjection;
 import com.gcoce.bc.ws.projections.beneficio.CuentaProjection;
+import com.gcoce.bc.ws.projections.beneficio.ParcialidadProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -15,6 +19,8 @@ import java.util.UUID;
  */
 @Repository
 public interface ParcialidadRepository extends JpaRepository<Parcialidad, UUID> {
+
+    boolean existsParcialidadByParcialidadId(UUID parcialidadId);
 
     @Query(value = "select count(*) as parcialidades\n" +
             "from beneficio_ws.parcialidad p \n" +
@@ -31,4 +37,18 @@ public interface ParcialidadRepository extends JpaRepository<Parcialidad, UUID> 
             "inner join beneficio_ws.cuenta c on c.no_solicitud = s.no_solicitud \n" +
             "where c.no_cuenta = :noCuenta", nativeQuery = true)
     CuentaProjection consultaCuenta(@Param("noCuenta") String noCuenta);
+
+    @Query(value = "select p.parcialidad_id parcialidadId, p.peso_ingresado pesoIngresado, p.parcialidad_verificada  parcialidadVerificada \n" +
+            "from beneficio_ws.parcialidad p \n" +
+            "inner join beneficio_ws.cuenta c on c.no_cuenta =  p.no_cuenta \n" +
+            "where p.no_cuenta =:noCuenta and c.estado_cuenta in(5, 6, 7)", nativeQuery = true)
+    List<ParcialidadProjection> obtenerParcialidades(@Param("noCuenta") String noCuenta);
+    Optional<Parcialidad> findParcialidadByParcialidadId(UUID parcialidadId);
+
+    @Query(value = "select p.parcialidad_id parcialidadId, p.licencia_piloto licenciaPiloto, p.placa_transporte placaTransporte, \n" +
+            "p.peso_ingresado pesoIngresado\n" +
+            "from beneficio_ws.parcialidad p \n" +
+            "inner join beneficio_ws.cuenta c on c.no_cuenta =  p.no_cuenta \n" +
+            "where p.no_cuenta =:noCuenta", nativeQuery = true)
+    List<AllParcialidadProjection> allParcialidadesByCuenta(@Param("noCuenta") String noCuenta);
 }

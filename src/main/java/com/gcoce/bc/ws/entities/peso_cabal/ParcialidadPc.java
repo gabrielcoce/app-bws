@@ -19,7 +19,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @Entity
-@Table(name = "parcialidad", schema = "peso_cabal_db")
+@Table(name = "parcialidad", uniqueConstraints = {@UniqueConstraint(columnNames = "parcialidad_id")}, schema = "peso_cabal_db")
 public class ParcialidadPc {
 
     @Id
@@ -42,6 +42,9 @@ public class ParcialidadPc {
 
     @Column(name = "peso_faltante")
     private Double pesoFaltante;
+
+    @Column(name = "no_cuenta")
+    private String noCuenta;
 
     @Column(name = "user_created")
     private String userCreated;

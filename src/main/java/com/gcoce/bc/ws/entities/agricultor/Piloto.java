@@ -1,4 +1,4 @@
-package com.gcoce.bc.ws.entities.beneficio;
+package com.gcoce.bc.ws.entities.agricultor;
 
 import com.gcoce.bc.ws.utils.Fechas;
 import jakarta.persistence.*;
@@ -11,24 +11,21 @@ import java.util.Date;
 
 /**
  * @author Gabriel Coc Estrada
- * @since 29/05/2023
+ * @since 11/06/2023
  */
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
 @Entity
-@Table(name = "piloto", uniqueConstraints = {@UniqueConstraint(columnNames = "licencia_piloto")}, schema = "beneficio_ws")
-public class PilotoBc {
+@Table(name = "piloto", uniqueConstraints = {@UniqueConstraint(columnNames = "licencia_piloto")}, schema = "agricultor_db")
+public class Piloto {
     @Id
     @Column(name = "licencia_piloto")
     private String licenciaPiloto;
 
     @Column(name = "nombre")
     private String nombre;
-
-    @Column(name = "estado_piloto")
-    private Boolean status;
 
     @Column(name = "user_created")
     private String userCreated;
@@ -44,13 +41,12 @@ public class PilotoBc {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    public static PilotoBc createPiloto(String licenciaPiloto, String nombre, String user){
-        PilotoBc pilotoBc = new PilotoBc();
-        pilotoBc.setLicenciaPiloto(licenciaPiloto);
-        pilotoBc.setNombre(nombre);
-        pilotoBc.setStatus(true);
-        pilotoBc.setUserCreated(user);
-        pilotoBc.setCreatedAt(Fechas.setTimeZoneDateGT(new Date()));
-        return pilotoBc;
+    public static Piloto createPilot(String licenciaPiloto, String nombre, String user) {
+        Piloto piloto = new Piloto();
+        piloto.setLicenciaPiloto(licenciaPiloto);
+        piloto.setNombre(nombre);
+        piloto.setUserCreated(user);
+        piloto.setCreatedAt(Fechas.setTimeZoneDateGT(new Date()));
+        return piloto;
     }
 }
