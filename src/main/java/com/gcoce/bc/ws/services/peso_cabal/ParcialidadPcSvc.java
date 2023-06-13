@@ -82,6 +82,10 @@ public class ParcialidadPcSvc {
         if (pcRepository.existsParcialidadPcByParcialidadId(dto.getParcialidadId())) {
             throw new PesoCabalException("La parcialidad ya se registro en Peso Cabal");
         }
+        var cuenta = cuentaSvc.obtenerCuentaSvc(dto.getNoCuenta());
+        if(!Objects.equals(cuenta.getEstadoCuenta(), Constants.PESAJE_INICIADO)){
+            throw new PesoCabalException("La Cuenta se encuentra en un estado no permitido");
+        }
         var parcialidad = parcialidadBeneficioSvc.obtenerParcialidadSvc(dto.getParcialidadId());
         parcialidadPc.setNoCuenta(dto.getNoCuenta());
         parcialidadPc.setParcialidadId(dto.getParcialidadId());

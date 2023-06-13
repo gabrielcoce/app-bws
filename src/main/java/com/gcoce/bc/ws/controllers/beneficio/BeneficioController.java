@@ -67,7 +67,7 @@ public class BeneficioController {
 
     @Operation(summary = "Beneficio Cuenta", description = "Método para actualizar estado cuenta")
     @PutMapping("/cuenta/permitir-ingreso/{noCuenta}")
-    @PreAuthorize("hasRole('BENEFICIO')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> permitirIngreso(@PathVariable String noCuenta, @RequestHeader(value = Constants.AUTHORIZATION, required = false) String token) {
         return cuentaSvc.permitirIngresoSvc(noCuenta, token);
     }
@@ -109,24 +109,28 @@ public class BeneficioController {
 
     @Operation(summary = "Cerrar Cuenta", description = "Método cambia el estado de la Cuenta a Cerrada en Beneficio")
     @PutMapping("/cuenta/cerrar-cuenta/{noCuenta}")
+    @PreAuthorize("hasRole('BENEFICIO')")
     public ResponseEntity<?> cerrarCuenta(@PathVariable String noCuenta, @RequestHeader(value = Constants.AUTHORIZATION, required = false) String token) {
         return cuentaSvc.cerrarCuentaSvc(noCuenta, token);
     }
 
     @Operation(summary = "Confirmar Cuenta", description = "Método cambia el estado de la Cuenta a Confirmada en Beneficio")
     @PutMapping("/cuenta/confirmar-cuenta/{noCuenta}")
+    @PreAuthorize("hasRole('BENEFICIO')")
     public ResponseEntity<?> confirmarCuenta(@PathVariable String noCuenta, @RequestHeader(value = Constants.AUTHORIZATION, required = false) String token) {
         return cuentaSvc.confirmarCuentaSvc(noCuenta, token);
     }
 
     @Operation(summary = "Obtener Parcialidades", description = "Método para obtener token de Hcaptcha")
     @GetMapping("/parcialidad/obtener-parcialidades/{noCuenta}")
+    @PreAuthorize("hasRole('BENEFICIO')")
     public List<AllParcialidadProjection> getAllParcialidades(@PathVariable String noCuenta) {
         return parcialidadSvc.allParcialidadesSvc(noCuenta);
     }
 
     @Operation(summary = "Obtener cuenta", description = "Método para obtener cuenta")
     @GetMapping("/cuenta/obtener-cuenta/{noCuenta}")
+    @PreAuthorize("hasRole('BENEFICIO')")
     public AllCuentaProjection getCuentaBeneficio(@PathVariable String noCuenta) {
         return cuentaSvc.obtenerCuentaByBcSvc(noCuenta);
     }
