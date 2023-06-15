@@ -30,7 +30,11 @@ public class JwtFilter extends OncePerRequestFilter {
     private UserDetailsSvcImpl userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Methods","GET, POST, PUT, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Allow-Headers", "DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,Authorization,If-Modified-Since,Cache-Control,Content-Type");
         final String requestTokenHeader = request.getHeader("Authorization");
         if (StringUtils.startsWith(requestTokenHeader, "Bearer ")) {
             String jwtToken = requestTokenHeader.substring(7);

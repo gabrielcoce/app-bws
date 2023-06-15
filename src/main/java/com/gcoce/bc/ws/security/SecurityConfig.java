@@ -19,8 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -83,13 +83,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    CorsFilter corsFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.applyPermitDefaultValues();
         corsConfig.setAllowCredentials(true);
         corsConfig.setAllowedOrigins(List.of("*"));
+        //corsConfig.addAllowedOriginPattern("*");
         corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE"));
-        corsConfig.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        corsConfig.setAllowedHeaders(List.of("Authorization"));
         corsConfig.setExposedHeaders(List.of("*"));
         corsConfig.addAllowedOrigin("*");
         corsConfig.addAllowedHeader("*");
@@ -97,7 +98,7 @@ public class SecurityConfig {
         corsConfig.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfig);
-        return source;
+        return new CorsFilter(source);
     }
 
     private static final String[] AUTH_WHITELIST = {
