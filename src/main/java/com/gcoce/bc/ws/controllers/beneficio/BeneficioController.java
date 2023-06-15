@@ -74,6 +74,13 @@ public class BeneficioController {
         return cuentaSvc.permitirIngresoSvc(noCuenta, token);
     }
 
+    @Operation(summary = "Beneficio Cuenta", description = "Método para actualizar estado cuenta")
+    @GetMapping("/cuenta/verificar-permitir-ingreso/{noCuenta}")
+    @PreAuthorize("hasRole('USER')")
+    public Boolean verificarPermitirIngreso(@PathVariable String noCuenta) {
+        return cuentaSvc.verificarPermitirIngresoSvc(noCuenta);
+    }
+
     /*@Operation(summary = "Beneficio Piloto", description = "Método para crear Piloto")
     @PostMapping("/piloto/crear-piloto")
     @PreAuthorize("hasRole('BENEFICIO')")

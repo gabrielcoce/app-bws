@@ -113,6 +113,14 @@ public class CuentaSvc {
         return ResponseEntity.ok(new SuccessResponse<>(HttpStatus.OK, "Ingreso permitido", true));
     }
 
+    public Boolean verificarPermitirIngresoSvc(String noCuenta) {
+        if (existsCuenta(noCuenta)) {
+            throw new BeneficioException("No. Cuenta no existe en Beneficio");
+        }
+        var cuenta = obtenerCuentaSvc(noCuenta);
+        return Objects.equals(cuenta.getEstadoCuenta(), Constants.CUENTA_CREADA);
+    }
+
     public ResponseEntity<?> cerrarCuentaSvc(String noCuenta, String token) {
         if (existsCuenta(noCuenta)) {
             throw new BeneficioException("No. Cuenta no existe en Beneficio");
@@ -167,7 +175,7 @@ public class CuentaSvc {
         return cuentaRepository.obtenerCuentas();
     }
 
-    public Boolean verificarCuentasSvc(){
+    public Boolean verificarCuentasSvc() {
         return !cuentaRepository.obtenerCuentas().isEmpty();
     }
 }
