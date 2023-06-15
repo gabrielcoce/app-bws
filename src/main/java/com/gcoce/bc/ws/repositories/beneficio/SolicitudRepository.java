@@ -1,6 +1,7 @@
 package com.gcoce.bc.ws.repositories.beneficio;
 
 import com.gcoce.bc.ws.entities.beneficio.Solicitud;
+import com.gcoce.bc.ws.projections.beneficio.AprobarSolicitudesProjection;
 import com.gcoce.bc.ws.projections.beneficio.SolicitudesProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -39,4 +40,12 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, String> {
             "left join beneficio_ws.catalogo c2 on c2.codigo_catalogo = s.estado_solicitud \n" +
             "where s.usuario_solicita = :usuarioSolicita order by s.created_at desc", nativeQuery = true)
     List<SolicitudesProjection> obtenerSolicitudes(@Param("usuarioSolicita") String usuarioSolicita);
+
+    @Query(value = "select s.no_solicitud noSolicitud, c2.nombre_catalogo tipoSolicitud, c.nombre_catalogo estadoSolicitud, \n" +
+            "s.peso_total pesoTotal, s.cantidad_parcialidades cantidadParcialidades, s.usuario_solicita usuarioSolicita\n" +
+            "from beneficio_ws.solicitud s\n" +
+            "inner join beneficio_ws.catalogo c on c.codigo_catalogo = s.estado_solicitud \n" +
+            "inner join beneficio_ws.catalogo c2 on c2.codigo_catalogo = s.tipo_solicitud \n" +
+            "where s.estado_solicitud in(1) order by s.created_at asc limit 1", nativeQuery = true)
+    List<AprobarSolicitudesProjection> obtenerSolicitudesAprobar();
 }

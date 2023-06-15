@@ -33,6 +33,12 @@ public class PesoCabalController {
         return parcialidadPcSvc.existeParcialidadSvc(parcialidadId);
     }
 
+    @Operation(summary = "Verifica Existencia de Parcialidades por Cuenta", description = "Método para verificar si existe parcialidades por Cuenta en Peso Cabal")
+    @GetMapping("/parcialidad/verifica-existencia-parcialidades/{noCuenta}")
+    public Boolean existeParcialidadesByCuenta(@PathVariable String noCuenta) {
+        return parcialidadPcSvc.existeParcialidadesByCuentaSvc(noCuenta);
+    }
+
     @Operation(summary = "Registra Parcialidad", description = "Método para obtener las parcialidades de una cuenta")
     @PostMapping("/parcialidad/registrar-parcialidad")
     public ResponseEntity<?> registrarParcialidad(@Valid @RequestBody ParcialidadPcDto dto, @RequestHeader(value = Constants.AUTHORIZATION, required = false) String token) {
@@ -68,7 +74,7 @@ public class PesoCabalController {
         return parcialidadPcSvc.finalizarPesajeSvc(noCuenta, token);
     }
 
-    @GetMapping("/parcialidad/parcialidades-registradas/{noCuenta}")
+    @GetMapping("/parcialidad/obtener-parcialidades-registradas/{noCuenta}")
     public List<ParcialidadPcProjection>obtenerParcialidadesRegistradas(@PathVariable String noCuenta){
         return parcialidadPcSvc.obtenerParcialidadesRegistradasSvc(noCuenta);
     }

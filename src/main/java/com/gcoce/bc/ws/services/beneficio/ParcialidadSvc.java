@@ -146,7 +146,7 @@ public class ParcialidadSvc {
         return parcialidadRepository.findParcialidadByParcialidadId(parcialidadId).orElseThrow(() -> new BeneficioException("No existe parcialidad"));
     }
 
-    public boolean verificarParcialidadSvc(UUID parcialidadId, String user) {
+    public boolean verificarParcialidadSvc(UUID parcialidadId, String user, Double pesoRegistrado) {
         Parcialidad parcialidad = parcialidadRepository.findById(parcialidadId).orElse(null);
         if (parcialidad == null) {
             logger.error("No se puedo verificar parcialidad");
@@ -157,6 +157,7 @@ public class ParcialidadSvc {
             return false;
         }
         parcialidad.setVerified(true);
+        parcialidad.setPesoVerificado(pesoRegistrado);
         parcialidad.setUserUpdated(user);
         parcialidad.setUpdatedAt(new Date());
         parcialidadRepository.save(parcialidad);

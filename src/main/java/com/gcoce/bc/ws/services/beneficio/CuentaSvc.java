@@ -6,6 +6,7 @@ import com.gcoce.bc.ws.entities.beneficio.Solicitud;
 import com.gcoce.bc.ws.exceptions.BeneficioException;
 import com.gcoce.bc.ws.payload.response.SuccessResponse;
 import com.gcoce.bc.ws.projections.beneficio.AllCuentaProjection;
+import com.gcoce.bc.ws.projections.beneficio.CountProjection;
 import com.gcoce.bc.ws.repositories.beneficio.CuentaRepository;
 import com.gcoce.bc.ws.utils.Constants;
 import org.slf4j.Logger;
@@ -82,12 +83,13 @@ public class CuentaSvc {
         return cuentaRepository.allCuentasByUser(user);
     }
 
-    public Boolean existeCuentaByUser(String user){
+    public Boolean existeCuentaByUser(String user) {
         if (!authSvc.existsUserSvc(user)) {
             throw new BeneficioException("Usuario no se encuentra registrado en Beneficio");
         }
         return !cuentaRepository.allCuentasByUser(user).isEmpty();
     }
+
     public AllCuentaProjection obtenerCuentaByBcSvc(String noCuenta) {
         if (existsCuenta(noCuenta)) {
             throw new BeneficioException("No. Cuenta no existe en Beneficio");
@@ -131,6 +133,10 @@ public class CuentaSvc {
         if (!Objects.equals(cuenta.getEstadoCuenta(), Constants.CUENTA_CERRADA)) {
             throw new BeneficioException("La Cuenta se encuentra en un estado no permitido");
         }
+
+        if (Objects.equals(cuenta.getEstadoCuenta(), Constants.CUENTA_CONFIRMADA)) {
+            throw new BeneficioException("La Cuenta ya se encuentra confirmada");
+        }
         updateEstadoCuentaSvc(noCuenta, Constants.CUENTA_CONFIRMADA, authSvc.userFromToken(token));
         return ResponseEntity.ok(new SuccessResponse<>(HttpStatus.OK, "Cuenta Confirmada", true));
     }
@@ -154,8 +160,14 @@ public class CuentaSvc {
         return !cuentaRepository.existsCuentaByNoCuenta(noCuenta);
     }
 
-    /*public boolean updateEstadoCuenta(String noCuenta, Integer status, String user) {
-        Integer estado = cuentaRepository.putEstadoCuenta(noCuenta, status, user);
-        return estado != 0;
-    }*/
+    public List<CountProjection> obtenerCuentasSvc() {
+        if (cuentaRepository.obtenerCuentas().isEmpty()) {
+            throw new BeneficioException("No hay cuentas para cerrar o confirmar");
+        }
+        return cuentaRepository.obtenerCuentas();
+    }
+
+    public Boolean verificarCuentasSvc(){
+        return !cuentaRepository.obtenerCuentas().isEmpty();
+    }
 }

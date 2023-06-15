@@ -2,6 +2,7 @@ package com.gcoce.bc.ws.repositories.beneficio;
 
 import com.gcoce.bc.ws.entities.beneficio.Cuenta;
 import com.gcoce.bc.ws.projections.beneficio.AllCuentaProjection;
+import com.gcoce.bc.ws.projections.beneficio.CountProjection;
 import com.gcoce.bc.ws.projections.beneficio.CuentaParcialidadProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -26,13 +27,6 @@ public interface CuentaRepository extends JpaRepository<Cuenta, String> {
 
     Optional<Cuenta> getCuentaByNoCuenta(String noCuenta);
 
-    /*@Transactional
-    @Modifying(clearAutomatically = true)
-    @Query(value = "update beneficio_ws.cuenta set \n" +
-            "estado_cuenta=:estadoCuenta, user_updated=:userUpdated, updated_at=now()\n" +
-            "where no_cuenta=:noCuenta", nativeQuery = true)
-    Integer putEstadoCuenta(@Param("noCuenta") String noCuenta, @Param("estadoCuenta") Integer estadoCuenta, @Param("userUpdated") String userUpdated);*/
-
     @Query(value = "select c.no_cuenta noCuenta, s.peso_total peso, s.cantidad_parcialidades parcialidades, \n" +
             "c2.nombre_catalogo estado, c.created_at createdAt\n" +
             "from beneficio_ws.cuenta c \n" +
@@ -54,4 +48,12 @@ public interface CuentaRepository extends JpaRepository<Cuenta, String> {
             "inner join beneficio_ws.parcialidad p on p.no_cuenta = c.no_cuenta \n" +
             "where c.no_cuenta=:noCuenta", nativeQuery = true)
     List<CuentaParcialidadProjection> verificarParcialidades(@Param("noCuenta") String noCuenta);
+
+    @Query(value = "select c.no_cuenta noCuenta, c2.nombre_catalogo estadoCuenta, p.parcialidad_id parcialidadId, \n" +
+            "p.peso_ingresado pesoIngresado, p.peso_verificado pesoVerificado,  p.updated_at updatedAt\n" +
+            "from beneficio_ws.cuenta c\n" +
+            "inner join beneficio_ws.parcialidad p on p.no_cuenta = c.no_cuenta \n" +
+            "inner join beneficio_ws.catalogo c2 on c2.codigo_catalogo = c.estado_cuenta \n" +
+            "where c.estado_cuenta in(7, 8) order by p.updated_at asc", nativeQuery = true)
+    List<CountProjection> obtenerCuentas();
 }

@@ -83,7 +83,7 @@ public class ParcialidadPcSvc {
             throw new PesoCabalException("La parcialidad ya se registro en Peso Cabal");
         }
         var cuenta = cuentaSvc.obtenerCuentaSvc(dto.getNoCuenta());
-        if(!Objects.equals(cuenta.getEstadoCuenta(), Constants.PESAJE_INICIADO)){
+        if (!Objects.equals(cuenta.getEstadoCuenta(), Constants.PESAJE_INICIADO)) {
             throw new PesoCabalException("La Cuenta se encuentra en un estado no permitido");
         }
         var parcialidad = parcialidadBeneficioSvc.obtenerParcialidadSvc(dto.getParcialidadId());
@@ -141,7 +141,7 @@ public class ParcialidadPcSvc {
         List<ResParcialidadDto> dtoList = new ArrayList<>();
         var parcialidades = parcialidadBeneficioSvc.obtenerParcialidadesSvc(noCuenta);
         if (parcialidades.isEmpty()) {
-            throw new PesoCabalException("No. Cuenta no tiene parcialidades registradas en Beneficio");
+            throw new PesoCabalException("Las parcialidades de este No. Cuenta no se encuentran en el Beneficio o ya fueron verificadas");
         }
         parcialidades.forEach(parcialidad -> {
             ResParcialidadDto dto = new ResParcialidadDto();
@@ -167,12 +167,19 @@ public class ParcialidadPcSvc {
         return pcRepository.existsParcialidadPcByParcialidadId(parcialidadId);
     }
 
+    public Boolean existeParcialidadesByCuentaSvc(String noCuenta) {
+        return pcRepository.existsParcialidadPcByNoCuenta(noCuenta);
+    }
+
     public ResponseEntity<?> verificarParcialidadSvc(UUID parcialidadId, String token) {
         if (parcialidadBeneficioSvc.existsParcialidadSvc(parcialidadId)) {
             throw new PesoCabalException("No existe parcialidad en Beneficio");
         }
-
-        if (!parcialidadBeneficioSvc.verificarParcialidadSvc(parcialidadId, authSvc.userFromToken(token))) {
+        var parcialidadPc = pcRepository.findParcialidadPcByParcialidadId(parcialidadId).orElse(null);
+        if (parcialidadPc == null) {
+            throw new PesoCabalException("No existe parcialidad en Peso Cabal");
+        }
+        if (!parcialidadBeneficioSvc.verificarParcialidadSvc(parcialidadId, authSvc.userFromToken(token), parcialidadPc.getPesoRegistrado())) {
             throw new PesoCabalException("No se pudo verificar parcialidad en Beneficio");
         }
         return ResponseEntity.ok(new SuccessResponse<>(HttpStatus.OK, "Parcialidad verificada correctamente", true));

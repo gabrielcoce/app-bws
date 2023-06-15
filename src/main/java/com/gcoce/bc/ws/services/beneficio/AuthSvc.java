@@ -5,7 +5,6 @@ import com.gcoce.bc.ws.entities.beneficio.Role;
 import com.gcoce.bc.ws.entities.beneficio.User;
 import com.gcoce.bc.ws.entities.beneficio.UserDetailsImpl;
 import com.gcoce.bc.ws.exceptions.AuthBadRequestException;
-import com.gcoce.bc.ws.exceptions.BeneficioException;
 import com.gcoce.bc.ws.exceptions.HcException;
 import com.gcoce.bc.ws.payload.request.LoginRequest;
 import com.gcoce.bc.ws.payload.request.SignupRequest;
@@ -69,9 +68,8 @@ public class AuthSvc {
     }
 
     public ResponseEntity<?> verifyHCaptcha(String hCaptchaResponse) {
-
-        Map<String, String> body = new HashMap<>();
         String errorMessage;
+        Map<String, String> body = new HashMap<>();
         body.put("secret", hCaptchaVerifySecret);
         body.put("response", hCaptchaResponse);
         logger.debug("Request body for hcaptcha: {}", body);

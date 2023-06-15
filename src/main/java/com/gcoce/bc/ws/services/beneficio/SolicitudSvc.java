@@ -1,11 +1,11 @@
 package com.gcoce.bc.ws.services.beneficio;
 
-import com.gcoce.bc.ws.dto.beneficio.ActualizarSolicitudDto;
 import com.gcoce.bc.ws.dto.beneficio.SolicitudDto;
 import com.gcoce.bc.ws.entities.beneficio.Solicitud;
 import com.gcoce.bc.ws.exceptions.BeneficioException;
 import com.gcoce.bc.ws.exceptions.RecordNotFoundException;
 import com.gcoce.bc.ws.payload.response.SuccessResponse;
+import com.gcoce.bc.ws.projections.beneficio.AprobarSolicitudesProjection;
 import com.gcoce.bc.ws.projections.beneficio.SolicitudesProjection;
 import com.gcoce.bc.ws.repositories.beneficio.SolicitudRepository;
 import com.gcoce.bc.ws.utils.Constants;
@@ -51,7 +51,7 @@ public class SolicitudSvc {
         try {
             final Solicitud solicitud = Solicitud.createdReqFromDto(solicitudDto);
             solicitudRepository.save(solicitud);
-            message = String.format("Solicitud %s a sido registrada exitosamente.", solicitud.getNoSolicitud());
+            message = String.format("Solicitud %s a sido creada exitosamente", solicitud.getNoSolicitud());
             return ResponseEntity.ok(new SuccessResponse<>(HttpStatus.OK, message, true));
         } catch (BeneficioException e) {
             throw new BeneficioException("No se pudo crear la solicitud");
@@ -79,7 +79,10 @@ public class SolicitudSvc {
 
     public ResponseEntity<?> rechazarSolicitudSvc(String noSolicitud, String token) {
         var solicitud = obtenerSolicitud(noSolicitud);
-        if(!Objects.equals(solicitud.getEstadoSolicitud(), Constants.SOLICITUD_APROBADA)){
+        if (Objects.equals(solicitud.getEstadoSolicitud(), Constants.SOLICITUD_RECHAZADA)) {
+            throw new BeneficioException("La Solicitud ya se encuentra rechazada");
+        }
+        if (Objects.equals(solicitud.getEstadoSolicitud(), Constants.SOLICITUD_APROBADA)) {
             throw new BeneficioException("La Solicitud ya se encuentra aprobada");
         }
         actualizarEstadoSolicitudSvc(noSolicitud, Constants.SOLICITUD_RECHAZADA, authSvc.userFromToken(token));
@@ -110,7 +113,7 @@ public class SolicitudSvc {
         if (!authSvc.existsUserSvc(usuarioSolicita)) {
             throw new BeneficioException("Usuario no se encuentra registrado en Beneficio");
         }
-        if(solicitudRepository.obtenerSolicitudes(usuarioSolicita).isEmpty()){
+        if (solicitudRepository.obtenerSolicitudes(usuarioSolicita).isEmpty()) {
             throw new BeneficioException("Usuario no cuenta con solicitudes en Beneficio");
         }
         return solicitudRepository.obtenerSolicitudes(usuarioSolicita);
@@ -128,5 +131,16 @@ public class SolicitudSvc {
     public Solicitud obtenerSolicitud(String noSolicitud) {
         return solicitudRepository.getSolicitudByNoSolicitud(noSolicitud)
                 .orElseThrow(() -> new RecordNotFoundException("Solicitud no existe"));
+    }
+
+    public List<AprobarSolicitudesProjection> obtenerSolicitudesApprobationSvc() {
+        if (solicitudRepository.obtenerSolicitudesAprobar().isEmpty()) {
+            throw new BeneficioException("No hay solicitudes para aprobar o rechazar");
+        }
+        return solicitudRepository.obtenerSolicitudesAprobar();
+    }
+
+    public Boolean verificarSolicitudesSvc(){
+        return !solicitudRepository.obtenerSolicitudesAprobar().isEmpty();
     }
 }

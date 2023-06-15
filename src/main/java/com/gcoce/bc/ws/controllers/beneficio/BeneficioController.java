@@ -5,6 +5,8 @@ import com.gcoce.bc.ws.payload.request.LoginRequest;
 import com.gcoce.bc.ws.payload.request.SignupRequest;
 import com.gcoce.bc.ws.projections.beneficio.AllCuentaProjection;
 import com.gcoce.bc.ws.projections.beneficio.AllParcialidadProjection;
+import com.gcoce.bc.ws.projections.beneficio.AprobarSolicitudesProjection;
+import com.gcoce.bc.ws.projections.beneficio.CountProjection;
 import com.gcoce.bc.ws.services.beneficio.*;
 import com.gcoce.bc.ws.utils.Constants;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,7 +54,7 @@ public class BeneficioController {
         return authSvc.registerUserSvc(signUpRequest);
     }
 
-    @Operation(summary = "Beneficio Auth", description = "Método para obtener token de Hcaptcha")
+    @Operation(summary = "Obtener token por Hcaptcha", description = "Método para obtener token por Hcaptcha")
     @GetMapping("/auth/hc/{hCaptchaResponse}")
     public ResponseEntity<?> getTokenHcaptcha(@PathVariable String hCaptchaResponse) {
         return authSvc.verifyHCaptcha(hCaptchaResponse);
@@ -100,7 +102,7 @@ public class BeneficioController {
         return transporteBcSvc.updateEstadoTransporteSvc(dto, token);
     }*/
 
-    @Operation(summary = "Rechazar Cuenta", description = "Método para actualizar estado solicitud")
+    @Operation(summary = "Rechazar Solicitud", description = "Método para rechazar la solicitud")
     @PutMapping("/solicitud/rechazar-solicitud")
     @PreAuthorize("hasRole('BENEFICIO')")
     public ResponseEntity<?> rechazarSolicitud(@Valid @RequestBody ActualizarSolicitudDto solicitudDto, @RequestHeader(value = Constants.AUTHORIZATION, required = false) String token) {
@@ -123,7 +125,7 @@ public class BeneficioController {
 
     @Operation(summary = "Obtener Parcialidades", description = "Método para obtener token de Hcaptcha")
     @GetMapping("/parcialidad/obtener-parcialidades/{noCuenta}")
-    @PreAuthorize("hasRole('BENEFICIO')")
+    @PreAuthorize("hasRole('USER')")
     public List<AllParcialidadProjection> getAllParcialidades(@PathVariable String noCuenta) {
         return parcialidadSvc.allParcialidadesSvc(noCuenta);
     }
@@ -133,5 +135,31 @@ public class BeneficioController {
     @PreAuthorize("hasRole('BENEFICIO')")
     public AllCuentaProjection getCuentaBeneficio(@PathVariable String noCuenta) {
         return cuentaSvc.obtenerCuentaByBcSvc(noCuenta);
+    }
+
+    @Operation(summary = "Obtener solicitudes para aprobar o rechazar", description = "Método para obtener solicitudes para aprobar o rechazar")
+    @GetMapping("/solicitud/obtener-solicitudes")
+    @PreAuthorize("hasRole('BENEFICIO')")
+    public List<AprobarSolicitudesProjection> getSolicitudes() {
+        return solicitudSvc.obtenerSolicitudesApprobationSvc();
+    }
+    @Operation(summary = "Obtener cuentas para cerrar o confirmar", description = "Método para obtener cuentas para cerrar o confirmar")
+    @GetMapping("/cuenta/obtener-cuentas")
+    @PreAuthorize("hasRole('BENEFICIO')")
+    public List<CountProjection> getCuentas() {
+        return cuentaSvc.obtenerCuentasSvc();
+    }
+
+    @Operation(summary = "Verificar solicitudes para aprobar o rechazar", description = "Método para verificar solicitudes para aprobar o rechazar")
+    @GetMapping("/solicitud/verificar-obtener-solicitudes")
+    @PreAuthorize("hasRole('BENEFICIO')")
+    public Boolean getVerificarSolicitudes() {
+        return solicitudSvc.verificarSolicitudesSvc();
+    }
+    @Operation(summary = "Verificar cuentas para cerrar o confirmar", description = "Método para verificar cuentas para cerrar o confirmar")
+    @GetMapping("/cuenta/verificar-obtener-cuentas")
+    @PreAuthorize("hasRole('BENEFICIO')")
+    public Boolean getVerificarCuentas() {
+        return cuentaSvc.verificarCuentasSvc();
     }
 }

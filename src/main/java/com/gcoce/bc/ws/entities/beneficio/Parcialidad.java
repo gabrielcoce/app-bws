@@ -49,6 +49,9 @@ public class Parcialidad {
     @Column(name = "parcialidad_verificada")
     private Boolean verified;
 
+    @Column(name = "peso_verificado")
+    private Double pesoVerificado;
+
     @Column(name = "user_created")
     private String userCreated;
 

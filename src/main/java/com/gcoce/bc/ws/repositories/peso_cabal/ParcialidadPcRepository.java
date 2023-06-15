@@ -19,6 +19,8 @@ import java.util.UUID;
 public interface ParcialidadPcRepository extends JpaRepository<ParcialidadPc, UUID> {
     boolean existsParcialidadPcByParcialidadId(UUID parcialidadId);
 
+    boolean existsParcialidadPcByNoCuenta(String noCuenta);
+
     Optional<ParcialidadPc> findParcialidadPcByParcialidadId(UUID parcialidadId);
 
     @Query(value = "select p.parcialidad_id parcialidadId, p.peso_ingresado pesoIngresado, p.peso_registrado pesoRegistrado,  \n" +
