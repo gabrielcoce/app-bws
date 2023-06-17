@@ -76,7 +76,7 @@ public class BeneficioController {
 
     @Operation(summary = "Beneficio Cuenta", description = "Método para actualizar estado cuenta")
     @GetMapping("/cuenta/verificar-permitir-ingreso/{noCuenta}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') || hasRole('PESO_CABAL')")
     public Boolean verificarPermitirIngreso(@PathVariable String noCuenta) {
         return cuentaSvc.verificarPermitirIngresoSvc(noCuenta);
     }

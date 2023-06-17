@@ -56,6 +56,6 @@ public interface ParcialidadRepository extends JpaRepository<Parcialidad, UUID> 
             "from beneficio_ws.cuenta c \n" +
             "inner join beneficio_ws.solicitud s on s.no_solicitud = c.no_solicitud \n" +
             "inner join beneficio_ws.parcialidad p on p.no_cuenta = c.no_cuenta \n" +
-            "where s.usuario_solicita =:usuario and c.estado_cuenta in(4)", nativeQuery = true)
+            "where s.usuario_solicita =:usuario and c.estado_cuenta in(4) order by c.created_at asc limit 1", nativeQuery = true)
     List<AllParcialidadProjection> allParcialidadesByUser(@Param("usuario") String usuario);
 }

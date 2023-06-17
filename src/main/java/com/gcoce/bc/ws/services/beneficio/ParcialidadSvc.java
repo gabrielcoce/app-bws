@@ -76,15 +76,15 @@ public class ParcialidadSvc {
         if (lastParcialidad(cuentaProjection.getCantidadParcialidades(), parcialidadIngresada)) {
             logger.info("ultima parcialidad");
             if (allowLastRegisterPeso(parcialidadDto.getPesoIngresado(), pesoResultante)) {
-                throw new BeneficioException("Peso excede el limite permitido");
+                throw new BeneficioException("Peso es mayor al limite permitido");
             }
 
             if (pesoMenorRestante(parcialidadDto.getPesoIngresado(), pesoResultante)) {
-                throw new BeneficioException("Peso es menor el limite permitido");
+                throw new BeneficioException("Peso es menor al limite permitido");
             }
         } else {
             if (allowRegisterPeso(parcialidadDto.getPesoIngresado(), pesoResultante)) {
-                throw new BeneficioException("Peso excede el limite permitido");
+                throw new BeneficioException("Peso es mayor al limite permitido");
             }
         }
 
